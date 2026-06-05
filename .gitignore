@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # v0 sandbox internal files
 __v0_runtime_loader.js
 __v0_devtools.tsx
@@ -13,3 +14,14 @@ __v0_jsx-dev-runtime.ts
 node_modules
 .next/
 .DS_Store
+=======
+.env
+/__pycache__/
+.vscode/
+.venv/
+.streamlit
+.devcontainer
+piper/
+ur_PK-fasih-medium-model.onnx
+ur_PK-fasih-medium-model.onnx.json
+>>>>>>> 4d31d42bbe55e3d75d46781e4a88fc2572b60c1e
