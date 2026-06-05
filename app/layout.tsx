@@ -8,7 +8,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'UrduFlow - Intelligent Urdu Voice Chat',
-  description: 'UrduFlow: Where Urdu meets Intelligent Voice. Experience the power of conversational AI in your native language.',
+  description: 'UrduFlow: Where Urdu meets Intelligent Voice.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
         media: '(prefers-color-scheme: dark)',
       },
       {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/favicon.ico',
+        type: 'image/x-icon',
       },
     ],
     apple: '/apple-icon.png',
