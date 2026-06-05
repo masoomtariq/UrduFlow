@@ -43,9 +43,6 @@ export default function LandingPage() {
 
           {/* Actions */}
           <div className="flex items-center gap-4">
-            <button className="hidden md:flex items-center justify-center bg-transparent border-2 border-teal-accent text-teal-accent hover:bg-teal-accent/10 px-6 py-2 rounded-full font-label-md transition-all duration-300 hover:scale-105">
-              Sign In
-            </button>
             <Link
               href="/chat"
               className="flex items-center justify-center bg-gradient-to-r from-deep-indigo to-teal-accent text-white px-6 py-2 rounded-full font-label-md shadow-lg transition-all duration-300 hover:scale-105"
