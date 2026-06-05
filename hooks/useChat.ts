@@ -87,8 +87,8 @@ export function useChat(): UseChatReturn {
         let userText = '';
         try {
           const transcribeResult = await transcribeAudio(sessionId, audioBlob);
-          userText = transcribeResult.transcribed_text;
-
+          userText = transcribeResult.transcription;
+          
           setTurns((prev) =>
             prev.map((turn) =>
               turn.id === turnId
@@ -125,7 +125,7 @@ export function useChat(): UseChatReturn {
         let assistantText = '';
         try {
           const generateResult = await generateResponse(sessionId);
-          assistantText = generateResult.generated_text;
+          assistantText = generateResult.response;
 
           setTurns((prev) =>
             prev.map((turn) =>
@@ -228,7 +228,7 @@ export function useChat(): UseChatReturn {
               t.id === turnId
                 ? {
                     ...t,
-                    userText: transcribeResult.transcribed_text,
+                    userText: transcribeResult.transcription,
                     status: 'generating',
                     phase: 'generation',
                     error: null,
@@ -243,7 +243,7 @@ export function useChat(): UseChatReturn {
               t.id === turnId
                 ? {
                     ...t,
-                    assistantText: generateResult.generated_text,
+                    assistantText: generateResult.response,
                     status: 'synthesizing',
                     phase: 'tts',
                     error: null,

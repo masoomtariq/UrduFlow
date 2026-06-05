@@ -2,12 +2,12 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8
 
 export interface TranscribeResponse {
   session_id: string;
-  transcribed_text: string;
+  transcription: string;
 }
 
 export interface GenerateResponse {
   session_id: string;
-  generated_text: string;
+  response: string;
 }
 
 export interface TTSResponse {
