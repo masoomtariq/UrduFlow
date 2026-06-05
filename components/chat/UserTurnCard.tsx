@@ -19,7 +19,7 @@ export function UserTurnCard({ turn, onRetry, isLoading }: UserTurnCardProps) {
 
   return (
     <div className="flex justify-start mb-4">
-      <div className="max-w-xs md:max-w-md lg:max-w-lg border-l-4 border-teal-accent bg-teal-accent/5 rounded-lg p-4">
+      <div className="min-w-[350px] max-w-xs md:max-w-md lg:max-w-lg border-l-4 border-teal-accent bg-teal-accent/5 rounded-lg p-4">
         {/* Audio Player */}
         {turn.userAudio && (
           <div className="mb-3">

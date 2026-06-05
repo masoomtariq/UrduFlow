@@ -25,28 +25,8 @@ export function AssistantTurnCard({
 
   return (
     <div className="flex justify-end mb-4">
-      <div className="max-w-xs md:max-w-md lg:max-w-lg bg-deep-indigo/10 border-r-4 border-deep-indigo rounded-lg p-4">
-        {/* Text Accordion */}
-        {turn.assistantText && (
-          <div className="mb-3">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="flex items-center gap-2 text-sm font-semibold text-on-surface hover:text-deep-indigo transition-colors w-full py-2 px-3 bg-white/50 rounded"
-            >
-              {isExpanded ? (
-                <ChevronUp size={16} />
-              ) : (
-                <ChevronDown size={16} />
-              )}
-              UrduFlow Response
-            </button>
-            {isExpanded && (
-              <div className="mt-2 p-3 bg-white rounded text-sm text-on-surface leading-relaxed rtl-text font-noto-nastaliq">
-                {turn.assistantText}
-              </div>
-            )}
-          </div>
-        )}
+      <div className="min-w-[400px] max-w-xs md:max-w-md lg:max-w-lg bg-deep-indigo/10 border-r-4 border-deep-indigo rounded-lg p-4">
+        
 
         {/* Audio Player - Skeleton Loading */}
         {isSynthesizing && (
@@ -60,10 +40,31 @@ export function AssistantTurnCard({
           <div className="mb-3">
             <audio
               controls
-              autoPlay
               className="w-full h-8 rounded"
               src={URL.createObjectURL(turn.assistantAudio)}
             />
+          </div>
+        )}
+
+        {/* Text Accordion */}
+        {turn.assistantText && (
+          <div className="mb-3">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="flex items-center gap-2 text-sm font-semibold text-on-surface hover:text-deep-indigo transition-colors w-full py-2 px-3 bg-white/50 rounded"
+            >
+              {isExpanded ? (
+                <ChevronUp size={16} />
+              ) : (
+                <ChevronDown size={16} />
+              )}
+              Response
+            </button>
+            {isExpanded && (
+              <div className="mt-2 p-3 bg-white rounded text-sm text-on-surface leading-relaxed rtl-text font-noto-nastaliq">
+                {turn.assistantText}
+              </div>
+            )}
           </div>
         )}
 

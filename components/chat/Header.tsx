@@ -14,18 +14,19 @@ export function Header({ onClearChat, isLoading }: HeaderProps) {
     <header className="sticky top-0 z-40 bg-white border-b border-border-subtle shadow-sm backdrop-blur-sm bg-white/95">
       <div className="flex justify-between items-center w-full px-4 md:px-8 py-4">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <Image
-            src="/images/header_logo.png"
-            alt="UrduFlow Logo"
-            width={32}
-            height={32}
-            className="h-8 w-8 object-contain"
-          />
-          <span className="font-hanken font-bold text-deep-indigo text-lg hidden sm:inline">
-            UrduFlow
-          </span>
-        </div>
+        <div className="flex items-center gap-1">
+            <span className="font-hanken text-2xl font-bold text-deep-indigo flex items-center">
+              UrduFl
+              <Image
+                src="/images/header_logo.png"
+                alt="UrduFlow Logo"
+                width={24}
+                height={24}
+                className="h-6 w-6 mx-px object-contain"
+              />
+              w
+            </span>
+          </div>
 
         {/* Clear Chat Button */}
         <Button
