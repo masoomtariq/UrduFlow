@@ -80,7 +80,7 @@ export function VoiceInput({ onSubmit, isLoading }: VoiceInputProps) {
   }, [duration, isRecording]);
 
   return (
-    <div className="flex flex-col items-center gap-4 py-6 px-4">
+    <div className="flex flex-row justify-center items-center gap-4 py-6 px-4">
       {/* Recording Status */}
       {isRecording && (
         <div className="text-center">

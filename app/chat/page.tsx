@@ -40,16 +40,9 @@ export default function ChatPage() {
       />
 
       {/* Voice Input */}
-      <div className="border-t border-border-subtle bg-surface-white">
+      <div className="border-border-subtle absolute w-full bottom-0">
         <VoiceInput onSubmit={submitAudio} isLoading={isLoading} />
       </div>
-
-      {/* Session ID Debug (Optional - remove in production) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="text-xs text-on-surface-variant/50 p-2 text-center border-t border-border-subtle">
-          Session: {sessionId}
-        </div>
-      )}
     </div>
   );
 }

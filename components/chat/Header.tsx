@@ -11,7 +11,7 @@ interface HeaderProps {
 
 export function Header({ onClearChat, isLoading }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-border-subtle shadow-sm backdrop-blur-sm bg-white/95">
+    <header className="sticky top-0 z-40 border-b border-border-subtle shadow-sm backdrop-blur-sm bg-transparent absolute top-0 w-full ">
       <div className="flex justify-between items-center w-full px-4 md:px-8 py-4">
         {/* Logo */}
         <div className="flex items-center gap-1">
