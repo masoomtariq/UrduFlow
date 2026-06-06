@@ -82,13 +82,15 @@ export function useChat(): UseChatReturn {
       setTurns((prev) => [...prev, newTurn]);
       scrollToBottom();
 
+      console.log(`[v0] Submitted audio for session ${sessionId}, turn ${turnId}`);
+
       try {
         // Phase 1: Transcribe
         let userText = '';
         try {
           const transcribeResult = await transcribeAudio(sessionId, audioBlob);
           userText = transcribeResult.transcription;
-          
+          console.log(`[v0] Transcribed text for turn ${turnId}: ${userText}`);
           setTurns((prev) =>
             prev.map((turn) =>
               turn.id === turnId
@@ -126,7 +128,7 @@ export function useChat(): UseChatReturn {
         try {
           const generateResult = await generateResponse(sessionId);
           assistantText = generateResult.response;
-
+          console.log(`[v0] Generated response for turn ${turnId}: ${assistantText}`);
           setTurns((prev) =>
             prev.map((turn) =>
               turn.id === turnId
@@ -162,6 +164,7 @@ export function useChat(): UseChatReturn {
         // Phase 3: Synthesize Audio
         try {
           const audioBlob = await synthesizeAudio(sessionId);
+          console.log(`[v0] Synthesized audio for turn ${turnId}`);
 
           setTurns((prev) =>
             prev.map((turn) =>
@@ -218,6 +221,7 @@ export function useChat(): UseChatReturn {
       if (!turn) return;
 
       try {
+        console.log(`[v0] Retrying phase "${phase}" for turn ${turnId}`);
         if (phase === 'transcription' && turn.userAudio) {
           const transcribeResult = await transcribeAudio(
             sessionId,
@@ -304,6 +308,7 @@ export function useChat(): UseChatReturn {
       // Generate new session ID
       const newSessionId = uuidv4();
       setSessionId(newSessionId);
+      console.log(`[v0] Cleared chat and started new session ${newSessionId}`);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Clear failed';
       setError(errorMsg);

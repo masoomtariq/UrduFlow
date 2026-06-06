@@ -79,58 +79,62 @@ export function VoiceInput({ onSubmit, isLoading }: VoiceInputProps) {
     }
   }, [duration, isRecording]);
 
-  return (
-    <div className="flex flex-row justify-center items-center gap-4 py-6 px-4">
-      {/* Recording Status */}
-      {isRecording && (
-        <div className="text-center">
-          <p className="text-sm text-on-surface-variant mb-2">
-            Recording... {formatDuration(duration)}
-          </p>
-          <AudioVisualizer frequencyData={frequencyData} isActive={isActive} />
-        </div>
+return (
+    <div className="flex flex-col justify-center items-center gap-4 py-6 px-4">
+      
+      {/* Processing State text moved above the buttons */}
+      {isSubmitting && (
+        <p className="text-sm text-deep-indigo font-medium animate-pulse">
+          Processing audio...
+        </p>
       )}
 
-      {/* Controls */}
-      <div className="flex items-center gap-3">
+      {/* The Flexbox Row for Controls */}
+      <div className="flex flex-row items-center justify-center gap-6">
         {!isRecording ? (
+          /* Not Recording: Just Start Button */
           <Button
             onClick={handleStartRecord}
             disabled={isLoading || isSubmitting}
             size="lg"
-            className="bg-gradient-to-r from-deep-indigo to-teal-accent text-white hover:scale-105 transition-transform"
+            className="bg-gradient-to-r from-deep-indigo to-teal-accent text-white hover:scale-105 transition-transform shadow-lg rounded-full px-8"
           >
             <Mic className="mr-2" size={20} />
             Start Recording
           </Button>
         ) : (
+          /* Is Recording: The Sandwich Layout */
           <>
-            <Button
-              onClick={handleStopRecord}
-              disabled={isSubmitting}
-              size="lg"
-              className="bg-gradient-to-r from-deep-indigo to-teal-accent text-white hover:scale-105 transition-transform"
-            >
-              <Send className="mr-2" size={20} />
-              Submit
-            </Button>
+            {/* Left: Cancel Button */}
             <Button
               onClick={handleCancel}
               variant="outline"
-              size="lg"
-              className="border-red-200 text-red-600 hover:bg-red-50"
+              size="icon"
+              className="h-12 w-12 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 bg-white shadow-sm rounded-full shrink-0"
             >
-              <X size={20} />
+              <X size={24} />
+            </Button>
+
+            {/* Middle: Visualizer */}
+            <div className="text-center flex flex-col items-center min-w-[160px]">
+              <p className="text-sm font-semibold text-deep-indigo mb-2">
+                Recording... {formatDuration(duration)}
+              </p>
+              <AudioVisualizer frequencyData={frequencyData} isActive={isActive} />
+            </div>
+
+            {/* Right: Submit Button */}
+            <Button
+              onClick={handleStopRecord}
+              disabled={isSubmitting}
+              size="icon"
+              className="h-12 w-12 bg-gradient-to-r from-deep-indigo to-teal-accent text-white hover:scale-105 transition-transform shadow-lg rounded-full shrink-0"
+            >
+              <Send size={20} />
             </Button>
           </>
         )}
       </div>
-
-      {isSubmitting && (
-        <p className="text-sm text-on-surface-variant animate-pulse">
-          Processing audio...
-        </p>
-      )}
     </div>
   );
 }
