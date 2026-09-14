@@ -119,7 +119,7 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
 
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, {
-          type: 'audio/wav',
+          type: mediaRecorder.mimeType,
         });
         setAudioBlob(audioBlob);
         setIsRecording(false);

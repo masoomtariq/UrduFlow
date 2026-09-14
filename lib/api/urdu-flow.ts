@@ -1,5 +1,23 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://masoomtariq-urduflow.hf.space';
 
+function getAudioFilename(audioFile: Blob): string {
+  const mimeType = audioFile.type.split(';')[0].toLowerCase();
+
+  const extensionMap: Record<string, string> = {
+    'audio/webm': 'webm',
+    'audio/mp4': 'mp4',
+    'audio/ogg': 'ogg',
+    'audio/wav': 'wav',
+    'audio/mpeg': 'mp3',
+    'audio/mp3': 'mp3',
+    'audio/m4a': 'm4a',
+  };
+
+  const extension = extensionMap[mimeType] || 'webm';
+
+  return `audio.${extension}`;
+}
+
 export interface TranscribeResponse {
   session_id: string;
   transcription: string;
@@ -24,7 +42,10 @@ export async function transcribeAudio(
   audioFile: Blob
 ): Promise<TranscribeResponse> {
   const formData = new FormData();
-  formData.append('audio', audioFile, 'audio.wav');
+
+  const filename = getAudioFilename(audioFile);
+
+  formData.append('audio', audioFile, filename);
 
   const response = await fetch(
     `${API_BASE_URL}/transcribe?session_id=${encodeURIComponent(sessionId)}`,
