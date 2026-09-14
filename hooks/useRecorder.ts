@@ -35,19 +35,13 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
 
       let stream: MediaStream;
       
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-          },
-        });
-      } catch (micError) {
-        // Create a silent audio context for demo/sandbox mode (no microphone available)
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        stream = audioContext.createMediaStreamDestination().stream;
-      }
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
 
       audioStreamRef.current = stream;
 
