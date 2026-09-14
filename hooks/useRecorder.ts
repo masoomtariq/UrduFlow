@@ -33,20 +33,38 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
       audioChunksRef.current = [];
       setDuration(0);
 
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          'Microphone access is not available. Open this app on localhost or over HTTPS.'
+        );
+      }
+
+      if (!window.MediaRecorder) {
+        throw new Error('Audio recording is not supported by this browser.');
+      }
+
       let stream: MediaStream;
       
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-      });
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        });
+      } catch (err) {
+        const errorName = err instanceof DOMException ? err.name : '';
+        if (errorName !== 'OverconstrainedError' && errorName !== 'NotFoundError') {
+          throw err;
+        }
+
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      }
 
       audioStreamRef.current = stream;
 
-      // Determine supported mime type
-      let mimeType = 'audio/webm';
+      // Use a MIME type only when the browser explicitly supports it.
       const types = [
         'audio/webm',
         'audio/webm;codecs=opus',
@@ -54,17 +72,13 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
         'audio/wav',
         'audio/ogg',
       ];
-      
-      for (const type of types) {
-        if (MediaRecorder.isTypeSupported(type)) {
-          mimeType = type;
-          break;
-        }
-      }
 
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: mimeType,
-      });
+      const mimeType = types.find((type) =>
+        MediaRecorder.isTypeSupported(type)
+      );
+      const mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
 
       mediaRecorder.ondataavailable = (event) => {
         audioChunksRef.current.push(event.data);
@@ -95,10 +109,21 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
 
 
     } catch (err) {
+      const errorName = err instanceof DOMException ? err.name : '';
       const errorMessage =
-        err instanceof Error ? err.message : 'Failed to start recording';
+        errorName === 'NotFoundError'
+          ? 'No microphone was found. Connect or enable a microphone, then try again.'
+          : errorName === 'NotAllowedError'
+            ? 'Microphone permission was denied. Allow microphone access in your browser and try again.'
+            : err instanceof Error
+              ? err.message
+              : 'Failed to start recording';
+      audioStreamRef.current?.getTracks().forEach((track) => track.stop());
+      audioStreamRef.current = null;
+      mediaRecorderRef.current = null;
       setError(errorMessage);
       setIsRecording(false);
+      throw new Error(errorMessage);
     }
   }, [maxDuration, isRecording]);
 
@@ -140,6 +165,10 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
   }, []);
 
   const resetRecorder = useCallback(() => {
+    mediaRecorderRef.current?.stop();
+    mediaRecorderRef.current = null;
+    audioStreamRef.current?.getTracks().forEach((track) => track.stop());
+    audioStreamRef.current = null;
     setIsRecording(false);
     setDuration(0);
     setAudioBlob(null);
