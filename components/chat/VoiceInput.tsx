@@ -33,16 +33,12 @@ export function VoiceInput({ onSubmit, isLoading }: VoiceInputProps) {
   const handleStartRecord = useCallback(async () => {
     try {
       await startRecording();
-      // Show info if in demo mode (no microphone available)
-      if (!audioStream || audioStream.getAudioTracks().length === 0) {
-        toast.info('Demo Mode: Running without microphone. Test the API connection with sample audio.');
-      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to start recording';
       toast.error(errorMessage);
     }
-  }, [startRecording, audioStream]);
+  }, [startRecording]);
 
   const handleStopRecord = useCallback(async () => {
     const blob = await stopRecording();
