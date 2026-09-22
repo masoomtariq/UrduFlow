@@ -75,7 +75,7 @@ A modern React-based voice chat interface for the UrduFlow Urdu language assista
    - By default, the app connects to `http://localhost:8000`
    - To use a different endpoint, create a `.env.local` file:
      ```
-     NEXT_PUBLIC_API_BASE_URL=https://your-api-endpoint.com
+     NEXT_PUBLIC_API_BASE_URL=https://masoomtariq-urduflow.hf.space
      ```
 
 3. **Start the development server**:

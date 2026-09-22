@@ -194,7 +194,7 @@ Once FastAPI backend is running:
 
 ### Environment Variables
 ```
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8000  # Required
+NEXT_PUBLIC_API_BASE_URL=https://masoomtariq-urduflow.hf.space  # Required
 ```
 
 ### Default Settings
@@ -269,7 +269,7 @@ git push origin main
 
 # Vercel auto-deploys on push
 # Set environment variable in Vercel dashboard:
-NEXT_PUBLIC_API_BASE_URL=https://api.yourdomai.com
+NEXT_PUBLIC_API_BASE_URL=https://masoomtariq-urduflow.hf.space
 ```
 
 ### For Self-Hosted
