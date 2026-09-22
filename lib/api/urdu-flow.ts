@@ -1,22 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://masoomtariq-urduflow.hf.space';
-
-function getAudioFilename(audioFile: Blob): string {
-  const mimeType = audioFile.type.split(';')[0].toLowerCase();
-
-  const extensionMap: Record<string, string> = {
-    'audio/webm': 'webm',
-    'audio/mp4': 'mp4',
-    'audio/ogg': 'ogg',
-    'audio/wav': 'wav',
-    'audio/mpeg': 'mp3',
-    'audio/mp3': 'mp3',
-    'audio/m4a': 'm4a',
-  };
-
-  const extension = extensionMap[mimeType] || 'webm';
-
-  return `audio.${extension}`;
-}
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 export interface TranscribeResponse {
   session_id: string;
@@ -42,10 +24,14 @@ export async function transcribeAudio(
   audioFile: Blob
 ): Promise<TranscribeResponse> {
   const formData = new FormData();
-
-  const filename = getAudioFilename(audioFile);
-
-  formData.append('audio', audioFile, filename);
+  
+  // Determine file extension based on MIME type
+  const extension = audioFile.type.includes('webm') ? 'webm' :
+                    audioFile.type.includes('mp4') ? 'mp4' :
+                    audioFile.type.includes('wav') ? 'wav' :
+                    audioFile.type.includes('ogg') ? 'ogg' : 'webm';
+  
+  formData.append('audio', audioFile, `audio.${extension}`);
 
   const response = await fetch(
     `${API_BASE_URL}/transcribe?session_id=${encodeURIComponent(sessionId)}`,

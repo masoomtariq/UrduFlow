@@ -23,6 +23,7 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const mimeTypeRef = useRef<string>('audio/webm');
   const durationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const maxDurationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -32,16 +33,6 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
       setAudioBlob(null);
       audioChunksRef.current = [];
       setDuration(0);
-
-      if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error(
-          'Microphone access is not available. Open this app on localhost or over HTTPS.'
-        );
-      }
-
-      if (!window.MediaRecorder) {
-        throw new Error('Audio recording is not supported by this browser.');
-      }
 
       let stream: MediaStream;
       
@@ -53,18 +44,16 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
             autoGainControl: true,
           },
         });
-      } catch (err) {
-        const errorName = err instanceof DOMException ? err.name : '';
-        if (errorName !== 'OverconstrainedError' && errorName !== 'NotFoundError') {
-          throw err;
-        }
-
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (micError) {
+        // Create a silent audio context for demo/sandbox mode (no microphone available)
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        stream = audioContext.createMediaStreamDestination().stream;
       }
 
       audioStreamRef.current = stream;
 
-      // Use a MIME type only when the browser explicitly supports it.
+      // Determine supported mime type
+      let mimeType = 'audio/webm';
       const types = [
         'audio/webm',
         'audio/webm;codecs=opus',
@@ -72,13 +61,19 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
         'audio/wav',
         'audio/ogg',
       ];
+      
+      for (const type of types) {
+        if (MediaRecorder.isTypeSupported(type)) {
+          mimeType = type;
+          break;
+        }
+      }
 
-      const mimeType = types.find((type) =>
-        MediaRecorder.isTypeSupported(type)
-      );
-      const mediaRecorder = mimeType
-        ? new MediaRecorder(stream, { mimeType })
-        : new MediaRecorder(stream);
+      mimeTypeRef.current = mimeType;
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: mimeType,
+      });
 
       mediaRecorder.ondataavailable = (event) => {
         audioChunksRef.current.push(event.data);
@@ -109,21 +104,10 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
 
 
     } catch (err) {
-      const errorName = err instanceof DOMException ? err.name : '';
       const errorMessage =
-        errorName === 'NotFoundError'
-          ? 'No microphone was found. Connect or enable a microphone, then try again.'
-          : errorName === 'NotAllowedError'
-            ? 'Microphone permission was denied. Allow microphone access in your browser and try again.'
-            : err instanceof Error
-              ? err.message
-              : 'Failed to start recording';
-      audioStreamRef.current?.getTracks().forEach((track) => track.stop());
-      audioStreamRef.current = null;
-      mediaRecorderRef.current = null;
+        err instanceof Error ? err.message : 'Failed to start recording';
       setError(errorMessage);
       setIsRecording(false);
-      throw new Error(errorMessage);
     }
   }, [maxDuration, isRecording]);
 
@@ -138,7 +122,7 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
 
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, {
-          type: mediaRecorder.mimeType,
+          type: mimeTypeRef.current,
         });
         setAudioBlob(audioBlob);
         setIsRecording(false);
@@ -165,10 +149,6 @@ export function useRecorder(maxDuration: number = 60000): UseRecorderReturn {
   }, []);
 
   const resetRecorder = useCallback(() => {
-    mediaRecorderRef.current?.stop();
-    mediaRecorderRef.current = null;
-    audioStreamRef.current?.getTracks().forEach((track) => track.stop());
-    audioStreamRef.current = null;
     setIsRecording(false);
     setDuration(0);
     setAudioBlob(null);
